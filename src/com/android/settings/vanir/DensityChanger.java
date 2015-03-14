@@ -202,10 +202,11 @@ public class DensityChanger extends SettingsPreferenceFragment implements
     }
 
     private void setLcdDensity(int newDensity) {
-        Helpers.getMount("rw");
-        new CMDProcessor().su.runWaitFor("busybox sed -i 's|ro.sf.lcd_density=.*|"
-                + "ro.sf.lcd_density" + "=" + newDensity + "|' " + "/system/build.prop");
-        Helpers.getMount("ro");
+        try {
+                SystemProperties.set("persist.sys.lcd_density", Integer.toString(value));
+        } catch (RuntimeException e) {
+                Log.e(TAG, "Unable to save LCD density")
+                return;
     }
 
     class ClearUserDataObserver extends IPackageDataObserver.Stub {
